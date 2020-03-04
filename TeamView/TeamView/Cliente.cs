@@ -61,7 +61,7 @@ namespace TeamView
             if (BtnCompartilhar.Text.StartsWith("Compartilhar"))
             {
                 timer1.Start();
-                BtnCompartilhar.Text = "Parar o compartilhamento...";
+                BtnCompartilhar.Text = "Parar de Compartilhar";
             }
             else
             {

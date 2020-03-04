@@ -87,6 +87,7 @@
             // 
             // BtnCompartilhar
             // 
+            this.BtnCompartilhar.Enabled = false;
             this.BtnCompartilhar.Font = new System.Drawing.Font("Roboto", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnCompartilhar.Location = new System.Drawing.Point(248, 112);
             this.BtnCompartilhar.Name = "BtnCompartilhar";
@@ -94,7 +95,6 @@
             this.BtnCompartilhar.TabIndex = 5;
             this.BtnCompartilhar.Text = "Compartilhar Tela";
             this.BtnCompartilhar.UseVisualStyleBackColor = true;
-            this.BtnCompartilhar.Enabled = false;
             this.BtnCompartilhar.Click += new System.EventHandler(this.BtnCompartilhar_Click);
             // 
             // timer1
@@ -113,7 +113,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "Cliente";
-            this.Text = "Form1";
+            this.Text = "Cliente";
             this.ResumeLayout(false);
             this.PerformLayout();
 
