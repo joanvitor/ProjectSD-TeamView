@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -32,8 +33,16 @@ namespace TeamView
         private void EnviarImagemDesktop()
         {
             BinaryFormatter binario = new BinaryFormatter();
-            mainStream = cliente.GetStream();
-            binario.Serialize(mainStream, getImagemDesktop());
+            try
+            {
+                mainStream = cliente.GetStream();
+                binario.Serialize(mainStream, getImagemDesktop());
+            }
+            catch (Exception)
+            {
+                Close();
+                MessageBox.Show("Falha de conexão...!!! Tente novamente...");
+            }
         }
 
         public Cliente()
@@ -43,16 +52,21 @@ namespace TeamView
 
         private void BtnConectar_Click(object sender, EventArgs e)
         {
-            NumeroPorta = int.Parse(textoPorta.Text);
+            
             try
             {
+                NumeroPorta = int.Parse(textoPorta.Text);
                 cliente.Connect(textoIP.Text, NumeroPorta);
                 MessageBox.Show("Conectado...!!!");
                 BtnCompartilhar.Enabled = true;
             }
-            catch (Exception)
+            catch (SocketException)
             {
                 MessageBox.Show("Falha na conexão...!!!");
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Informe o número da porta e/ou IP...!!!");
             }
         }
 

@@ -35,12 +35,19 @@ namespace TeamView
 
         private void IniciarEscuta()
         {
-            while ( ! cliente.Connected)
+            try
             {
-                servidor.Start();
-                cliente = servidor.AcceptTcpClient();
+                while (!cliente.Connected)
+                {
+                    servidor.Start();
+                    cliente = servidor.AcceptTcpClient();
+                }
+                getImagem.Start();
             }
-            getImagem.Start();
+            catch (SocketException)
+            {
+                MessageBox.Show("Não abra novas conexões...!!!");
+            }
         }
 
         private void PararEscuta()

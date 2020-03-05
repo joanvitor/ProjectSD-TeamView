@@ -19,9 +19,16 @@ namespace TeamView
 
         private void BtnAbrirConexao_Click(object sender, EventArgs e)
         {
-            int porta = int.Parse(textoPorta.Text);
-            Servidor server = new Servidor(porta);
-            server.Show();
+            try
+            {
+                int porta = int.Parse(textoPorta.Text);
+                Servidor server = new Servidor(porta);
+                server.Show();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Informe o número da porta...!!!");
+            }
         }
     }
 }
