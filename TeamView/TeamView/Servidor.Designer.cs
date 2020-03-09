@@ -42,6 +42,7 @@
             this.caixaImagem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.caixaImagem.TabIndex = 0;
             this.caixaImagem.TabStop = false;
+            this.caixaImagem.Click += new System.EventHandler(this.caixaImagem_Click);
             // 
             // Servidor
             // 

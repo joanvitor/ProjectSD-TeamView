@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,9 +17,10 @@ namespace TeamView
 {
     public partial class Cliente : Form
     {
-        private readonly TcpClient cliente = new TcpClient();
+        private readonly TcpClient servidor = new TcpClient();
         private NetworkStream mainStream;
         private int NumeroPorta;
+        private Thread T_point;
 
         private static Image getImagemDesktop()
         {
@@ -35,7 +37,7 @@ namespace TeamView
             BinaryFormatter binario = new BinaryFormatter();
             try
             {
-                mainStream = cliente.GetStream();
+                mainStream = servidor.GetStream();
                 binario.Serialize(mainStream, getImagemDesktop());
             }
             catch (Exception)
@@ -52,13 +54,15 @@ namespace TeamView
 
         private void BtnConectar_Click(object sender, EventArgs e)
         {
-            
             try
             {
                 NumeroPorta = int.Parse(textoPorta.Text);
-                cliente.Connect(textoIP.Text, NumeroPorta);
+                servidor.Connect(textoIP.Text, NumeroPorta);
                 MessageBox.Show("Conectado...!!!");
                 BtnCompartilhar.Enabled = true;
+
+                T_point = new Thread(() => GetPointToServer());
+                T_point.Start();
             }
             catch (SocketException)
             {
@@ -87,6 +91,40 @@ namespace TeamView
         private void timer1_Tick(object sender, EventArgs e)
         {
             EnviarImagemDesktop();
+        }
+
+        private void GetPointToServer()
+        {
+            int bytesize = 1024;
+            while (servidor.Connected)
+            {
+                try
+                {
+                    var stream = servidor.GetStream();
+                    var messageBytes = new byte[bytesize];
+                    stream.Read(messageBytes, 0, messageBytes.Length);
+
+                    var messageString = LimparMessage(ConvertToString(messageBytes));
+
+                    var strSplit = messageString.Split(';');
+                    Console.WriteLine($"X: {strSplit[0]} Y: {strSplit[1]}");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Servidor desconectado...");
+                }
+            }
+        }
+
+        private string ConvertToString(byte[] bytes) => Encoding.Unicode.GetString(bytes);
+
+        private string LimparMessage(string message)
+        {
+            var str = string.Empty;
+            foreach(var _char in message)
+                if (_char != '\0')
+                    str += _char;
+            return str;
         }
     }
 }

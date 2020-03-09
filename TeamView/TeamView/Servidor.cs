@@ -64,7 +64,7 @@ namespace TeamView
             while (cliente.Connected)
             {
                 mainStream = cliente.GetStream();
-                caixaImagem.Image = (Image) binario.Deserialize(mainStream);
+                caixaImagem.Image = (Image)binario.Deserialize(mainStream);
             }
         }
 
@@ -80,5 +80,26 @@ namespace TeamView
             base.OnFormClosing(e);
             PararEscuta();
         }
+
+        private void caixaImagem_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs) e;
+            Point coordenadas = me.Location;
+            Console.WriteLine($"{coordenadas.X.ToString()}   {coordenadas.Y.ToString()}");
+            var mensagem = coordenadas.X.ToString() + ";" + coordenadas.Y.ToString();
+            sendPointToClient(cliente, ConvertToBytes(mensagem));
+        }
+
+        private void sendPointToClient(TcpClient _cliente, byte[] bytes)
+        {
+            if (_cliente != null && _cliente.Connected)
+            {
+                cliente
+                .GetStream().
+                Write(bytes, 0, bytes.Length);
+            }
+        }
+
+        private byte [] ConvertToBytes(string str) => Encoding.Unicode.GetBytes(str);
     }
 }
