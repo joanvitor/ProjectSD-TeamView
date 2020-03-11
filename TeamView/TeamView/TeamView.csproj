@@ -52,6 +52,7 @@
     <Compile Include="Cliente.Designer.cs">
       <DependentUpon>Cliente.cs</DependentUpon>
     </Compile>
+    <Compile Include="EnumKeysExtension.cs" />
     <Compile Include="Inicial.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -42,7 +42,8 @@
             this.caixaImagem.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.caixaImagem.TabIndex = 0;
             this.caixaImagem.TabStop = false;
-            this.caixaImagem.Click += new System.EventHandler(this.caixaImagem_Click);
+            this.caixaImagem.Click += new System.EventHandler(this.CaixaImagem_Click);
+            
             // 
             // Servidor
             // 
@@ -52,6 +53,7 @@
             this.Controls.Add(this.caixaImagem);
             this.Name = "Servidor";
             this.Text = "Servidor";
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Servidor_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.caixaImagem)).EndInit();
             this.ResumeLayout(false);
 

@@ -17,8 +17,8 @@ namespace TeamView
 {
     public partial class Cliente : Form
     {
-        private readonly TcpClient servidor = new TcpClient();
-        private NetworkStream mainStream;
+        private readonly TcpClient Servidor = new TcpClient();
+        private NetworkStream MainStream;
         private int NumeroPorta;
         private Thread T_point;
 
@@ -37,8 +37,8 @@ namespace TeamView
             BinaryFormatter binario = new BinaryFormatter();
             try
             {
-                mainStream = servidor.GetStream();
-                binario.Serialize(mainStream, getImagemDesktop());
+                MainStream = Servidor.GetStream();
+                binario.Serialize(MainStream, getImagemDesktop());
             }
             catch (Exception)
             {
@@ -57,11 +57,11 @@ namespace TeamView
             try
             {
                 NumeroPorta = int.Parse(textoPorta.Text);
-                servidor.Connect(textoIP.Text, NumeroPorta);
+                Servidor.Connect(textoIP.Text, NumeroPorta);
                 MessageBox.Show("Conectado...!!!");
                 BtnCompartilhar.Enabled = true;
 
-                T_point = new Thread(() => GetPointToServer());
+                T_point = new Thread(() => GetMessageServer());
                 T_point.Start();
             }
             catch (SocketException)
@@ -88,26 +88,25 @@ namespace TeamView
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void Timer1_Tick(object sender, EventArgs e)
         {
             EnviarImagemDesktop();
         }
 
-        private void GetPointToServer()
+        private void GetMessageServer()
         {
             int bytesize = 1024;
-            while (servidor.Connected)
+            while (Servidor.Connected)
             {
                 try
                 {
-                    var stream = servidor.GetStream();
+                    var stream = Servidor.GetStream();
                     var messageBytes = new byte[bytesize];
                     stream.Read(messageBytes, 0, messageBytes.Length);
 
                     var messageString = LimparMessage(ConvertToString(messageBytes));
-
-                    var strSplit = messageString.Split(';');
-                    Console.WriteLine($"X: {strSplit[0]} Y: {strSplit[1]}");
+                    Console.WriteLine(messageString);
+                    ProcessarInput(messageString);
                 }
                 catch (Exception)
                 {
@@ -125,6 +124,29 @@ namespace TeamView
                 if (_char != '\0')
                     str += _char;
             return str;
+        }
+
+        private void ProcessarInput(string msg)
+        {
+            if (msg.StartsWith("#")) // é teclado
+                ProcessarInputTeclado(msg);
+
+            if (msg.StartsWith("$")) // é mouse
+                ProcessarInputMouse(msg);
+        }
+
+        private void ProcessarInputMouse(string msg)
+        {
+            var cood = msg.Replace("$", "");
+
+            var strSplit = cood.Split(';');
+            Console.WriteLine($"X: {strSplit[0]} Y: {strSplit[1]}");
+        }
+
+        private void ProcessarInputTeclado(string msg)
+        {
+            var key = msg.Replace("#", "");
+            SendKeys.SendWait(key);
         }
     }
 }

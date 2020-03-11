@@ -17,19 +17,19 @@ namespace TeamView
     public partial class Servidor : Form
     {
         public int _porta;
-        private TcpClient cliente;
-        private TcpListener servidor;
-        private NetworkStream mainStream;
+        private TcpClient _Cliente;
+        private TcpListener _Servidor;
+        private NetworkStream MainStream;
 
-        private readonly Thread ouvindo;
-        private readonly Thread getImagem;
+        private readonly Thread Ouvindo;
+        private readonly Thread GetImagem;
 
         public Servidor(int porta)
         {
             _porta = porta;
-            cliente = new TcpClient();
-            ouvindo = new Thread(IniciarEscuta);
-            getImagem = new Thread(ReceberImagem);
+            _Cliente = new TcpClient();
+            Ouvindo = new Thread(IniciarEscuta);
+            GetImagem = new Thread(ReceberImagem);
             InitializeComponent();
         }
 
@@ -37,12 +37,12 @@ namespace TeamView
         {
             try
             {
-                while (!cliente.Connected)
+                while (!_Cliente.Connected)
                 {
-                    servidor.Start();
-                    cliente = servidor.AcceptTcpClient();
+                    _Servidor.Start();
+                    _Cliente = _Servidor.AcceptTcpClient();
                 }
-                getImagem.Start();
+                GetImagem.Start();
             }
             catch (SocketException)
             {
@@ -52,27 +52,27 @@ namespace TeamView
 
         private void PararEscuta()
         {
-            servidor.Stop();
-            cliente = null;
-            if (ouvindo.IsAlive) ouvindo.Abort();
-            if (getImagem.IsAlive) getImagem.Abort();
+            _Servidor.Stop();
+            _Cliente = null;
+            if (Ouvindo.IsAlive) Ouvindo.Abort();
+            if (GetImagem.IsAlive) GetImagem.Abort();
         }
 
         private void ReceberImagem()
         {
             BinaryFormatter binario = new BinaryFormatter();
-            while (cliente.Connected)
+            while (_Cliente.Connected)
             {
-                mainStream = cliente.GetStream();
-                caixaImagem.Image = (Image)binario.Deserialize(mainStream);
+                MainStream = _Cliente.GetStream();
+                caixaImagem.Image = (Image)binario.Deserialize(MainStream);
             }
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            servidor = new TcpListener(IPAddress.Any, _porta);
-            ouvindo.Start();
+            _Servidor = new TcpListener(IPAddress.Any, _porta);
+            Ouvindo.Start();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -81,25 +81,54 @@ namespace TeamView
             PararEscuta();
         }
 
-        private void caixaImagem_Click(object sender, EventArgs e)
+        private void CaixaImagem_Click(object sender, EventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs) e;
+
+            //var mouseEvent = string.Empty;
+            //if (me.Button == MouseButtons.Right)
+            //    mouseEvent = "Right Click";
+            //if (me.Button == MouseButtons.Left)
+            //    mouseEvent = "Right Click";
+
+            //Console.WriteLine($"CLICK ESQUERDO {MouseButtons.Left.ToString()}");
             Point coordenadas = me.Location;
-            Console.WriteLine($"{coordenadas.X.ToString()}   {coordenadas.Y.ToString()}");
-            var mensagem = coordenadas.X.ToString() + ";" + coordenadas.Y.ToString();
-            sendPointToClient(cliente, ConvertToBytes(mensagem));
+            //Console.WriteLine($"{coordenadas.X.ToString()}   {coordenadas.Y.ToString()}");
+            var mensagem = "$" + coordenadas.X.ToString() + ";" + coordenadas.Y.ToString();
+            SendMessageToClient(_Cliente, ConvertToBytes(mensagem));
         }
 
-        private void sendPointToClient(TcpClient _cliente, byte[] bytes)
+        private void SendMessageToClient(TcpClient _cliente, byte[] bytes)
         {
             if (_cliente != null && _cliente.Connected)
             {
-                cliente
-                .GetStream().
-                Write(bytes, 0, bytes.Length);
+                _Cliente
+                    .GetStream()
+                    .Write(bytes, 0, bytes.Length);
             }
         }
 
         private byte [] ConvertToBytes(string str) => Encoding.Unicode.GetBytes(str);
+
+        private void Servidor_KeyUp(object sender, KeyEventArgs e) // click e solta
+        {
+            var teste = e.KeyCode.ConvertKeyToString();
+            // var teclaServidor = (int)e.KeyCode;
+            // envia pro cliente via sockete
+            SendMessageToClient(_Cliente, ConvertToBytes("#" + teste.ToString()));
+
+            // recebe no cliente
+            // var teclaCLiente = (Keys)teclaServidor;
+            // SendKeys.Send("{Q}");
+        }
+
+
+        /*
+         MENSAGEM PRO CLIENTE
+            TECLADO  ~>  #COD
+            MOUSE    ~>  $COODX;COODY
+            MOUSE L  ~>  $L$COODX;COODY 
+            MOUSE R  ~>  $R$COODX;COODY
+         */
     }
 }
