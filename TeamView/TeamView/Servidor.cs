@@ -112,14 +112,134 @@ namespace TeamView
 
         private void Servidor_KeyUp(object sender, KeyEventArgs e) // click e solta
         {
-            var teste = e.KeyCode.ConvertKeyToString();
-            // var teclaServidor = (int)e.KeyCode;
+            //var teste = e.KeyCode.ConvertKeyToString();
+            //Console.WriteLine(teste);
+            var TeclaServidor = (int) e.KeyCode;
             // envia pro cliente via sockete
-            SendMessageToClient(_Cliente, ConvertToBytes("#" + teste.ToString()));
+            SendMessageToClient(_Cliente, ConvertToBytes("#" + GetTeclaInMapaKeys(TeclaServidor)));
 
             // recebe no cliente
             // var teclaCLiente = (Keys)teclaServidor;
             // SendKeys.Send("{Q}");
+        }
+
+        private string GetTeclaInMapaKeys(int codKey)
+        {
+            Dictionary<int, string> MapeamentoKeys = new Dictionary<int, string>()
+            {
+                { 1, "{LButton}"},
+                { 2, "{RButton}"},
+                { 4, "{MButton}"},
+                { 5, "{XButton1}"},
+                { 6, "{XButton2}"},
+                { 20, "{CapsLock}"},
+                { 32, "{Space}"},
+                { 9, "{Tab}"},
+                //{ 13, "{Enter}"},
+                { 13, "{Return}"},
+                { 27, "{Escape}"},
+                { 46, "{Delete}"},
+                { 45, "{Insert}"},
+                { 36, "{Home}"},
+                { 35, "{End}"},
+                { 33, "{PgUp}"},
+                { 34, "{PgDn}"},
+                { 38, "{Up}"},
+                { 40, "{Down}"},
+                { 37, "{Left}"},
+                { 39, "{Right}"},
+                { 96, "{Numpad0}"},
+                { 97, "{Numpad1}"},
+                { 98, "{Numpad2}"},
+                { 99, "{Numpad3}"},
+                { 100, "{Numpad4}"},
+                { 101, "{Numpad5}"},
+                { 102, "{Numpad6}"},
+                { 103, "{Numpad7}"},
+                { 104, "{Numpad8}"},
+                { 105, "{Numpad9}"},
+                { 144, "{NumLock}"},
+                { 91, "{LWin}"},
+                { 92, "{RWin}"},
+                { 131072, "{Ctrl}"},
+                { 262144, "{Alt}"},
+                { 65536, "{Shift}"},
+                { 162, "{LControl}"},
+                { 163, "{RControl}"},
+                { 160, "{LShift}"},
+                { 161, "{RShift}"},
+                { 44, "{PrintScreen}"},
+                { 65, "{A}"},
+                { 66, "{B}"},
+                { 67, "{C}"},
+                { 68, "{D}"},
+                { 69, "{E}"},
+                { 70, "{F}"},
+                { 71, "{G}"},
+                { 72, "{H}"},
+                { 73, "{I}"},
+                { 74, "{J}"},
+                { 75, "{K}"},
+                { 76, "{L}"},
+                { 77, "{M}"},
+                { 78, "{N}"},
+                { 79, "{O}"},
+                { 80, "{P}"},
+                { 81, "{Q}"},
+                { 82, "{R}"},
+                { 83, "{S}"},
+                { 84, "{T}"},
+                { 85, "{U}"},
+                { 86, "{V}"},
+                { 87, "{W}"},
+                { 88, "{X}"},
+                { 89, "{Y}"},
+                { 90, "{Z}"},
+                { 111, "{NumpadDiv}"},
+                { 106, "{NumpadMult}"},
+                { 107, "{NumpadAdd}"},
+                { 109, "{NumpadSub}"},
+                { 112, "{F1}"},
+                { 113, "{F2}"},
+                { 114, "{F3}"},
+                { 115, "{F4}"},
+                { 116, "{F5}"},
+                { 117, "{F6}"},
+                { 118, "{F7}"},
+                { 119, "{F8}"},
+                { 120, "{F9}"},
+                { 121, "{F10}"},
+                { 122, "{F11}"},
+                { 123, "{F12}"},
+                { 124, "{F13}"},
+                { 125, "{F14}"},
+                { 126, "{F15}"},
+                { 127, "{F16}"},
+                { 128, "{F17}"},
+                { 129, "{F18}"},
+                { 130, "{F19}"},
+                { 131, "{F20}"},
+                { 132, "{F21}"},
+                { 133, "{F22}"},
+                { 134, "{F23}"},
+                { 135, "{F24}"},
+                { 221,"{]}"},
+                { 188,"{,}"},
+                { 189,"{-}"},
+                { 219,"{[}"},
+                { 190,"{.}"},
+                { 220,"{/}"},
+                { 187,"{+}"},
+                { 191,"{?}"},
+                { 222,"{'}"},
+                //{ 222, "{"+'"'+"}"},
+                { 186,"{;}"},
+                { 192,"{~}"}
+            };
+            var NameKey = string.Empty;
+            MapeamentoKeys.TryGetValue(codKey, out NameKey);
+            //Console.WriteLine($"Dictionary: {NameKey}");
+            return NameKey;
         }
 
 

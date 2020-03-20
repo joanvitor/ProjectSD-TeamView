@@ -105,7 +105,7 @@ namespace TeamView
                     stream.Read(messageBytes, 0, messageBytes.Length);
 
                     var messageString = LimparMessage(ConvertToString(messageBytes));
-                    Console.WriteLine(messageString);
+                    //Console.WriteLine($"Cliente: {messageString}");
                     ProcessarInput(messageString);
                 }
                 catch (Exception)
