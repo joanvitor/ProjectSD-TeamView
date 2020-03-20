@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
@@ -135,18 +136,53 @@ namespace TeamView
                 ProcessarInputMouse(msg);
         }
 
-        private void ProcessarInputMouse(string msg)
+        private void ProcessarInputMouse(string msg) // $L$100;200
         {
-            var cood = msg.Replace("$", "");
-
-            var strSplit = cood.Split(';');
-            Console.WriteLine($"X: {strSplit[0]} Y: {strSplit[1]}");
+            var cood = msg.Replace("$", ""); // L100;200
+            char QualClicou = ' ';
+            if (cood.StartsWith("L"))
+            {
+                QualClicou = 'L';
+                cood = cood.Replace("L","");
+            }
+            if (cood.StartsWith("R"))
+            {
+                QualClicou = 'R';
+                cood = cood.Replace("R", "");
+            }
+            var StrSplit = cood.Split(';');
+            Console.WriteLine($"X: {StrSplit[0]} Y: {StrSplit[1]}");
+            DoMouseClick(uint.Parse(StrSplit[0]), uint.Parse(StrSplit[1]), QualClicou);
         }
 
         private void ProcessarInputTeclado(string msg)
         {
             var key = msg.Replace("#", "");
             SendKeys.SendWait(key);
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
+        //Mouse actions
+        private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        private const int MOUSEEVENTF_LEFTUP = 0x04;
+        private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+        private const int MOUSEEVENTF_RIGHTUP = 0x10;
+
+        public void DoMouseClick(uint X, uint Y, char Click)
+        {
+            if (Click.Equals('L'))
+            {
+                //simula clique esquerdo
+                mouse_event(MOUSEEVENTF_LEFTDOWN, X, Y, 0, 0);
+                mouse_event(MOUSEEVENTF_LEFTUP, X, Y, 0, 0);
+            }
+            if (Click.Equals('R'))
+            {
+                //simula clique direito
+                mouse_event(MOUSEEVENTF_RIGHTDOWN, X, Y, 0, 0);
+                mouse_event(MOUSEEVENTF_RIGHTUP, X, Y, 0, 0);
+            }
         }
     }
 }

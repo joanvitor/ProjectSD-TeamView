@@ -85,17 +85,16 @@ namespace TeamView
         {
             MouseEventArgs me = (MouseEventArgs) e;
 
-            //var mouseEvent = string.Empty;
-            //if (me.Button == MouseButtons.Right)
-            //    mouseEvent = "Right Click";
-            //if (me.Button == MouseButtons.Left)
-            //    mouseEvent = "Right Click";
+            var MouseClick = string.Empty;
+            if (me.Button == MouseButtons.Right)
+                MouseClick = "$R";
+            if (me.Button == MouseButtons.Left)
+                MouseClick = "$L";
 
-            //Console.WriteLine($"CLICK ESQUERDO {MouseButtons.Left.ToString()}");
             Point coordenadas = me.Location;
             //Console.WriteLine($"{coordenadas.X.ToString()}   {coordenadas.Y.ToString()}");
-            var mensagem = "$" + coordenadas.X.ToString() + ";" + coordenadas.Y.ToString();
-            SendMessageToClient(_Cliente, ConvertToBytes(mensagem));
+            var Mensagem = MouseClick + "$" + coordenadas.X.ToString() + ";" + coordenadas.Y.ToString();
+            SendMessageToClient(_Cliente, ConvertToBytes(Mensagem));
         }
 
         private void SendMessageToClient(TcpClient _cliente, byte[] bytes)
