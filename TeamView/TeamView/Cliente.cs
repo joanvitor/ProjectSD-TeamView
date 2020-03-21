@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TeamView
@@ -190,6 +184,16 @@ namespace TeamView
                 mouse_event(MOUSEEVENTF_RIGHTDOWN, X, Y, 0, 0);
                 mouse_event(MOUSEEVENTF_RIGHTUP, X, Y, 0, 0);
             }
+        }
+
+        /// <summary>
+        /// Metódo que retorna o width e o height respectivamente da janela do desktop e não do windows forms.
+        /// </summary>
+        private (int, int) SizeDesktop()
+        {
+            var Width = Screen.PrimaryScreen.WorkingArea.Width;
+            var Height = Screen.PrimaryScreen.WorkingArea.Height;
+            return (Width, Height);
         }
     }
 }

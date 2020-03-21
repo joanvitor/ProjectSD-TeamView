@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TeamView
@@ -30,7 +26,11 @@ namespace TeamView
             _Cliente = new TcpClient();
             Ouvindo = new Thread(IniciarEscuta);
             GetImagem = new Thread(ReceberImagem);
+            this.WindowState = FormWindowState.Normal;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
+            this.MaximizeBox = false;
         }
 
         private void IniciarEscuta()
