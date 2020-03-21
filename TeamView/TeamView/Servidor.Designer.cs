@@ -43,6 +43,7 @@
             this.caixaImagem.TabIndex = 0;
             this.caixaImagem.TabStop = false;
             this.caixaImagem.Click += new System.EventHandler(this.CaixaImagem_Click);
+            this.caixaImagem.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CaixaImagem_MouseMove);
             
             // 
             // Servidor

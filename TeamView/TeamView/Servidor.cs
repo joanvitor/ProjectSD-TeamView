@@ -97,6 +97,14 @@ namespace TeamView
             SendMessageToClient(_Cliente, ConvertToBytes(Mensagem));
         }
 
+        private void CaixaImagem_MouseMove(object sender, EventArgs e)
+        {
+            MouseEventArgs me = (MouseEventArgs) e;
+            Point coordenadas = me.Location;
+            var Mensagem = "$" + coordenadas.X.ToString() + ";" + coordenadas.Y.ToString();
+            SendMessageToClient(_Cliente, ConvertToBytes(Mensagem));
+        }
+
         private void SendMessageToClient(TcpClient _cliente, byte[] bytes)
         {
             if (_cliente != null && _cliente.Connected)

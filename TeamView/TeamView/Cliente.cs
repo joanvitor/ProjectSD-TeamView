@@ -136,9 +136,9 @@ namespace TeamView
                 ProcessarInputMouse(msg);
         }
 
-        private void ProcessarInputMouse(string msg) // $L$100;200
+        private void ProcessarInputMouse(string msg) //(op1) $L$100;200   (op2) $100;23
         {
-            var cood = msg.Replace("$", ""); // L100;200
+            var cood = msg.Replace("$", ""); //(op1) L100;200 (op2) 100 23
             char QualClicou = ' ';
             if (cood.StartsWith("L"))
             {
@@ -151,9 +151,16 @@ namespace TeamView
                 cood = cood.Replace("R", "");
             }
             var StrSplit = cood.Split(';');
-            Console.WriteLine($"X: {StrSplit[0]} Y: {StrSplit[1]}");
-            DoMouseClick(uint.Parse(StrSplit[0]), uint.Parse(StrSplit[1]), QualClicou);
+            //Console.WriteLine($"X: {StrSplit[0]} Y: {StrSplit[1]}");
+            if (QualClicou.Equals('L') || QualClicou.Equals('R'))
+                DoMouseClick(uint.Parse(StrSplit[0]), uint.Parse(StrSplit[1]), QualClicou);
+
+            // movimentar o mouse a partir das coordenadas
+            SetCursorPos(int.Parse(StrSplit[0]), int.Parse(StrSplit[1]));
         }
+
+        [DllImport("user32.dll")]
+        static extern bool SetCursorPos(int X, int Y);
 
         private void ProcessarInputTeclado(string msg)
         {
