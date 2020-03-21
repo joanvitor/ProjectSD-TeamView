@@ -27,7 +27,7 @@ namespace TeamView
             Ouvindo = new Thread(IniciarEscuta);
             GetImagem = new Thread(ReceberImagem);
             this.WindowState = FormWindowState.Normal;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            //this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
             this.MaximizeBox = false;
