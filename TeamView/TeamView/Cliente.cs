@@ -16,8 +16,9 @@ namespace TeamView
         private NetworkStream MainStream;
         private int NumeroPorta;
         private Thread T_point;
+        private readonly Metodos _metodos;
 
-        private static Image getImagemDesktop()
+        private static Image GetImagemDesktop()
         {
             Rectangle limiteRetangulo = Screen.PrimaryScreen.Bounds;
             Bitmap capturaTela =
@@ -33,7 +34,7 @@ namespace TeamView
             try
             {
                 MainStream = Servidor.GetStream();
-                binario.Serialize(MainStream, getImagemDesktop());
+                binario.Serialize(MainStream, GetImagemDesktop());
             }
             catch (Exception)
             {
@@ -44,6 +45,7 @@ namespace TeamView
 
         public Cliente()
         {
+            _metodos = new Metodos();
             InitializeComponent();
         }
 
@@ -55,7 +57,7 @@ namespace TeamView
                 Servidor.Connect(textoIP.Text, NumeroPorta);
                 MessageBox.Show("Conectado...!!!");
                 BtnCompartilhar.Enabled = true;
-
+                EnviarTamanhoDoDesktop();
                 T_point = new Thread(() => GetMessageServer());
                 T_point.Start();
             }
@@ -66,6 +68,26 @@ namespace TeamView
             catch (FormatException)
             {
                 MessageBox.Show("Informe o número da porta e/ou IP...!!!");
+            }
+        }
+
+        private void EnviarTamanhoDoDesktop()
+        {
+            (var Largura, var Altura) = _metodos.SizeDesktop();
+            /*
+             * Codificação de Mensagem para Size do Desktop
+             * SDCoordX;Coordy 
+             * SD = Size Desktop
+             * CoordX = coordenada X ; CoordY = coordenada Y
+             */
+            var Mensagem = $"SD{Largura};{Altura}";
+            try
+            {
+                _metodos.SendMessageToComputer(Servidor, _metodos.ConvertToBytes(Mensagem));
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Tivemos um problema ao enviar o valor de ajuste da tela!!!");
             }
         }
 
@@ -99,7 +121,7 @@ namespace TeamView
                     var messageBytes = new byte[bytesize];
                     stream.Read(messageBytes, 0, messageBytes.Length);
 
-                    var messageString = LimparMessage(ConvertToString(messageBytes));
+                    var messageString = _metodos.LimparMessage(_metodos.ConvertToString(messageBytes));
                     //Console.WriteLine($"Cliente: {messageString}");
                     ProcessarInput(messageString);
                 }
@@ -108,17 +130,6 @@ namespace TeamView
                     Console.WriteLine("Servidor desconectado...");
                 }
             }
-        }
-
-        private string ConvertToString(byte[] bytes) => Encoding.Unicode.GetString(bytes);
-
-        private string LimparMessage(string message)
-        {
-            var str = string.Empty;
-            foreach(var _char in message)
-                if (_char != '\0')
-                    str += _char;
-            return str;
         }
 
         private void ProcessarInput(string msg)
@@ -145,7 +156,6 @@ namespace TeamView
                 cood = cood.Replace("R", "");
             }
             var StrSplit = cood.Split(';');
-            //Console.WriteLine($"X: {StrSplit[0]} Y: {StrSplit[1]}");
             if (QualClicou.Equals('L') || QualClicou.Equals('R'))
                 DoMouseClick(uint.Parse(StrSplit[0]), uint.Parse(StrSplit[1]), QualClicou);
 
@@ -184,16 +194,6 @@ namespace TeamView
                 mouse_event(MOUSEEVENTF_RIGHTDOWN, X, Y, 0, 0);
                 mouse_event(MOUSEEVENTF_RIGHTUP, X, Y, 0, 0);
             }
-        }
-
-        /// <summary>
-        /// Metódo que retorna o width e o height respectivamente da janela do desktop e não do windows forms.
-        /// </summary>
-        private (int, int) SizeDesktop()
-        {
-            var Width = Screen.PrimaryScreen.WorkingArea.Width;
-            var Height = Screen.PrimaryScreen.WorkingArea.Height;
-            return (Width, Height);
         }
     }
 }
