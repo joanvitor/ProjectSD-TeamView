@@ -112,6 +112,8 @@
             this.Controls.Add(this.textoIP);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.MaximumSize = new System.Drawing.Size(564, 246);
+            this.MinimumSize = new System.Drawing.Size(564, 246);
             this.Name = "Cliente";
             this.Text = "Cliente";
             this.ResumeLayout(false);

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TeamView
@@ -18,15 +11,18 @@ namespace TeamView
         }
 
         private void BtnCliente_Click(object sender, EventArgs e)
-        {
-            Cliente cliente = new Cliente();
-            cliente.Show();
-        }
+            => new Cliente().Show();
 
         private void BtnServidor_Click(object sender, EventArgs e)
-        {
-            ServidorPorta servidor = new ServidorPorta();
-            servidor.Show();
-        }
+            => new ServidorPorta().Show();
+
+        private void códigoFonteToolStripMenuItem_Click(object sender, EventArgs e)
+            => new CodigoFonte().Show();
+
+        private void contatoToolStripMenuItem_Click(object sender, EventArgs e)
+            => new Contato().Show();
+
+        private void oQueÉToolStripMenuItem_Click(object sender, EventArgs e)
+            => new SobreSoftware().Show();
     }
 }
